@@ -12,16 +12,18 @@ import com.sample.core.enums.TipoRodadoEnum;
 
 public interface RodadoService {
 
-	public List<Rodado> listarRodado() throws Exception;
+    // Para llenar tu tabla en el JSP
+    public List<Rodado> listarTodos() throws Exception;
 
+    // Para procesar el formulario de creación
+    public void crearRodado(Rodado rodado) throws Exception;
 
-	public void crearRodado(String patente, String chasis, String color, CajaEnum caja, MotorEnum motor,
-			TipoEstadoEnum TipoEstado, TipoConsumoEnum TipoConsumo, PuertasEnum puertas, TipoRodadoEnum TipoRodado)
-			throws Exception;
+    // Para procesar cambios
+    public void actualizar(Rodado rodado) throws Exception;
 
-
-	public void LeerRodado(String patente, String chasis, String color, CajaEnum caja, MotorEnum motor,
-			TipoEstadoEnum TipoEstado, TipoConsumoEnum TipoConsumo, PuertasEnum puertas, TipoRodadoEnum TipoRodado)
-			throws Exception;
-
+    // Para borrar, solo necesitas la clave primaria
+    public void eliminar(String patente) throws Exception;
+    
+    // Tip: Te falta uno para buscar por patente (útil para editar)
+    public Rodado buscarPorPatente(String patente) throws Exception;
 }

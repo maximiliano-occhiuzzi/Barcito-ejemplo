@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.sample.core.service.RodadoService;
 import com.sample.core.service.RodadoServiceImp;
+import com.sample.core.domain.Rodado;
 import com.sample.core.enums.CajaEnum;
 import com.sample.core.enums.MotorEnum;
 import com.sample.core.enums.PuertasEnum;
@@ -36,23 +37,23 @@ public class RodadoController extends HttpServlet {
 		String TipoRodado = (String) req.getParameter("TipoRodado");
 		System.out.println("DEBUG - Valor de Caja: [" + Caja + "]");
 		try {
-			RodadoService.crearRodado(
-				    Patente, 
-				    Chasis, 
-				    Color, 
-				    CajaEnum.valueOf(Caja.trim().toUpperCase()), // .trim() es la clave
-				    MotorEnum.valueOf(Motor.trim().toUpperCase()), 
-				    TipoEstadoEnum.valueOf(TipoEstado.trim().toUpperCase()),
-				    TipoConsumoEnum.valueOf(TipoConsumo.trim().toUpperCase()), 
-				    PuertasEnum.valueOf(Puertas.trim().toUpperCase()),
-				    TipoRodadoEnum.valueOf(TipoRodado.trim().toUpperCase())
-				);
+			Rodado nuevoRodado = new Rodado(Patente, CajaEnum.valueOf(Caja.trim().toUpperCase()), Chasis,
+					MotorEnum.valueOf(Motor.trim().toUpperCase()),
+					TipoEstadoEnum.valueOf(TipoEstado.trim().toUpperCase()), Color,
+					TipoConsumoEnum.valueOf(TipoConsumo.trim().toUpperCase()),
+					PuertasEnum.valueOf(Puertas.trim().toUpperCase()), null, // Si tenés un campo 'id' o similar que sea
+																				// nulo/auto
+					TipoRodadoEnum.valueOf(TipoRodado.trim().toUpperCase()));
 
-		  } catch (Exception e) {
-		        e.printStackTrace();
-		        // Si hay error, podr�as redirigir con un mensaje de error
-		        resp.sendRedirect("/rodadoForm.jsp?status=error");
-		    }
+			// 2. Ahora llamás al service pasando el OBJETO completo
+			RodadoService.crearRodado(nuevoRodado);
+			resp.sendRedirect(req.getContextPath() + "/listarRodado");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Si hay error, podr�as redirigir con un mensaje de error
+			resp.sendRedirect(req.getContextPath() + "/rodadoForm.jsp?status=error");
+		}
 	}
 
 }
