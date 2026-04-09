@@ -112,7 +112,7 @@
         <div class="col-lg-8">
             
             <!-- Botón Volver -->
-            <a href="listarRodado" class="btn-back">
+            <a href="<%= request.getContextPath() %>/listarRodado" class="btn-back">
                 <i class="fa-solid fa-arrow-left me-2"></i> Volver al listado
             </a>
 

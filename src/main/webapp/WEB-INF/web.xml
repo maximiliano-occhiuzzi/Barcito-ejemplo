@@ -5,17 +5,20 @@
 <web-app>
   <display-name>Barcito fatima</display-name>
 
-<welcome-file-list>
-	<welcome-file>usuario/login.jsp</welcome-file>
-</welcome-file-list>
+  <!-- ELIMINAMOS TODOS LOS <servlet> Y <servlet-mapping> DE RODADO -->
 
-<error-page>
-	<error-code>400</error-code>
-	<location>/error</location >
-</error-page>
- <error-page >
-<exception-type> javax.servlet.ServletException </exception-type>
-<location>/error</location>
-</error-page>
+  <welcome-file-list>
+    <welcome-file>usuario/login.jsp</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>400</error-code>
+    <location>/error</location>
+  </error-page>
+  
+  <error-page>
+    <exception-type>javax.servlet.ServletException</exception-type>
+    <location>/error</location>
+  </error-page>
 
 </web-app>

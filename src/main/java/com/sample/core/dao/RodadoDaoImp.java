@@ -47,9 +47,38 @@ public class RodadoDaoImp implements RodadoDao {
 
 	@Override
 	public Rodado findByPatente(String patente) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	    Rodado r = null;
+	    Statement st = null;
+	    ResultSet rs = null;
+
+	    try {
+	        st = conexion.dameConnection().createStatement();
+	        rs = st.executeQuery("SELECT * FROM rodado WHERE patente = '" + patente + "'");
+
+	        if (rs.next()) {
+	            // Mapeamos los datos de la base de datos al objeto Rodado
+	            r = new Rodado(
+	                rs.getString("patente"), 
+	                CajaEnum.valueOf(rs.getString("caja")),
+	                rs.getString("chasis"), 
+	                MotorEnum.valueOf(rs.getString("motor")),
+	                TipoEstadoEnum.valueOf(rs.getString("tipo_estado")), 
+	                rs.getString("color"),
+	                TipoConsumoEnum.valueOf(rs.getString("tipo_consumo")),
+	                PuertasEnum.valueOf(rs.getString("puertas")), 
+	                null, // Id si existe
+	                TipoRodadoEnum.valueOf(rs.getString("tipo_rodado"))
+	            );
+	        }
+	    } catch (Exception e) {
+	        System.out.println("Error en DAO al buscar por patente: " + e.getMessage());
+	        throw new Exception("Error al obtener el rodado: " + e.getMessage());
+	    } finally {
+	        finalizarConexion(st, rs);
+	    }
+	    return r;
 	}
+
 
 	@Override
 	public List<Rodado> listarRodado() throws Exception {
@@ -82,17 +111,48 @@ public class RodadoDaoImp implements RodadoDao {
 		}
 		return lista;
 	}
-
 	@Override
 	public void actualizar(Rodado rodado) throws Exception {
-		// TODO Auto-generated method stub
-
+	    Statement st = null;
+	    try {
+	        st = conexion.dameConnection().createStatement();
+	        String sql = "UPDATE rodado SET "
+	                + "chasis = '" + rodado.getChasis() + "', "
+	                + "color = '" + rodado.getColor() + "', "
+	                + "caja = '" + rodado.getCaja().name() + "', "
+	                + "motor = '" + rodado.getMotor().name() + "', "
+	                + "tipo_estado = '" + rodado.getTipoEstado().name() + "', "
+	                + "tipo_consumo = '" + rodado.getTipoConsumo().name() + "', "
+	                + "puertas = '" + rodado.getPuertas().name() + "', "
+	                + "tipo_rodado = '" + rodado.getTipoRodado().name() + "' "
+	                + "WHERE patente = '" + rodado.getPatente() + "'";
+	        
+	        int result = st.executeUpdate(sql);
+	        if (result == 0) {
+	            throw new Exception("No se encontró el rodado con patente " + rodado.getPatente() + " para actualizar.");
+	        }
+	    } catch (Exception e) {
+	        throw new Exception("Error al actualizar: " + e.getMessage());
+	    } finally {
+	        finalizarConexion(st, null);
+	    }
 	}
 
 	@Override
 	public void eliminar(String patente) throws Exception {
-		// TODO Auto-generated method stub
-
+	    Statement st = null;
+	    try {
+	        st = conexion.dameConnection().createStatement();
+	        int result = st.executeUpdate("DELETE FROM rodado WHERE patente = '" + patente + "'");
+	        
+	        if (result == 0) {
+	            throw new Exception("No se encontró el rodado con patente " + patente + " para eliminar.");
+	        }
+	    } catch (Exception e) {
+	        throw new Exception("Error al eliminar: " + e.getMessage());
+	    } finally {
+	        finalizarConexion(st, null);
+	    }
 	}
 
 	private void finalizarConexion(Statement st, ResultSet rs) {

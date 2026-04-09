@@ -210,15 +210,18 @@ body {
 								class="fw-semibold small text-uppercase text-secondary">
 									<i class="fa-solid fa-car-side me-1"></i> <%=r.getTipoRodado()%>
 							</span></td>
-							<td class="text-end"><a
-								href="editar?id=<%=r.getPatente()%>"
+							<td class="text-end">
+								<!-- Botón Editar: Llama al doGet de actualizarRodado --> <a
+								href="<%=request.getContextPath()%>/actualizarRodado?patente=<%=r.getPatente()%>"
 								class="action-icon icon-edit shadow-sm me-1" title="Editar">
 									<i class="fa-solid fa-pen-to-square"></i>
-							</a> <a href="eliminar?id=<%=r.getPatente()%>"
+							</a> <!-- Botón Borrar: Llama al doGet de eliminarRodado --> <a
+								href="<%=request.getContextPath()%>/eliminarRodado?patente=<%=r.getPatente()%>"
 								class="action-icon icon-delete shadow-sm" title="Borrar"
 								onclick="return confirm('¿Seguro que deseas eliminar este rodado?')">
 									<i class="fa-solid fa-trash"></i>
-							</a></td>
+							</a>
+							</td>
 						</tr>
 						<%
 						}
