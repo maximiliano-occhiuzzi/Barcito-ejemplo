@@ -171,82 +171,84 @@ body {
 							<th class="text-end">Acciones</th>
 						</tr>
 					</thead>
-					<tbody>
-						<%
-						List<Rodado> lista = (List<Rodado>) request.getAttribute("listaRodados");
-						if (lista != null && !lista.isEmpty()) {
-							for (Rodado r : lista) {
-						%>
-						<tr>
-							<td>
-								<div class="d-flex align-items-center">
-									<span class="patente-cell me-3 text-uppercase"><%=r.getPatente()%></span>
-								</div>
-							</td>
-							<td>
-								<div class="small fw-bold">
-									Chasis:
-									<%=r.getChasis()%></div>
-								<div class="text-muted small">
-									<i class="fa-solid fa-palette me-1"></i>
-									<%=r.getColor()%></div>
-							</td>
-							<td>
-								<div class="small mb-1">
-									<i class="fa-solid fa-gear text-muted me-1"></i>
-									<%=r.getCaja()%>
-								</div>
-								<div class="small">
-									<i class="fa-solid fa-gas-pump text-muted me-1"></i>
-									<%=r.getMotor()%>
-								</div>
-							</td>
-							<td><span
-								class="badge badge-status <%=r.getTipoEstado().toString().equals("NUEVO") ? "bg-success-subtle text-success"
-		: "bg-warning-subtle text-warning"%>">
-									<i class="fa-solid fa-circle fa-2xs me-1"></i> <%=r.getTipoEstado()%>
-							</span></td>
-							<td><span
-								class="fw-semibold small text-uppercase text-secondary">
-									<i class="fa-solid fa-car-side me-1"></i> <%=r.getTipoRodado()%>
-							</span></td>
-							<td class="text-end">
-								<!-- Botón Editar: Llama al doGet de actualizarRodado --> <a
-								href="<%=request.getContextPath()%>/actualizarRodado?patente=<%=r.getPatente()%>"
-								class="action-icon icon-edit shadow-sm me-1" title="Editar">
-									<i class="fa-solid fa-pen-to-square"></i>
-							</a> <!-- Botón Borrar: Llama al doGet de eliminarRodado --> <a
-								href="<%=request.getContextPath()%>/eliminarRodado?patente=<%=r.getPatente()%>"
-								class="action-icon icon-delete shadow-sm" title="Borrar"
-								onclick="return confirm('¿Seguro que deseas eliminar este rodado?')">
-									<i class="fa-solid fa-trash"></i>
-							</a>
-							</td>
-						</tr>
-						<%
-						}
-						} else {
-						%>
-						<tr>
-							<td colspan="6">
-								<div class="empty-state">
-									<i class="fa-solid fa-car-rear fa-4x text-light mb-3"></i>
-									<h5 class="text-muted">No hay rodados registrados</h5>
-									<p class="small text-muted">Comienza agregando un nuevo
-										vehículo al inventario.</p>
-								</div>
-							</td>
-						</tr>
-						<%
-						}
-						%>
-					</tbody>
+				<tbody>
+    <%
+    List<Rodado> lista = (List<Rodado>) request.getAttribute("listaRodados");
+    if (lista != null && !lista.isEmpty()) {
+        for (Rodado r : lista) {
+    %>
+    <tr id="fila-<%=r.getPatente()%>">
+        <td>
+            <div class="d-flex align-items-center">
+                <span class="patente-cell me-3 text-uppercase"><%=r.getPatente()%></span>
+            </div>
+        </td>
+        <td>
+            <div class="small fw-bold">Chasis: <%=r.getChasis()%></div>
+            <div class="text-muted small">
+                <i class="fa-solid fa-palette me-1"></i><%=r.getColor()%>
+            </div>
+        </td>
+        <td>
+            <div class="small mb-1">
+                <i class="fa-solid fa-gear text-muted me-1"></i><%=r.getCaja()%>
+            </div>
+            <div class="small">
+                <i class="fa-solid fa-gas-pump text-muted me-1"></i><%=r.getMotor()%>
+            </div>
+        </td>
+        <td>
+            <span class="badge badge-status <%=r.getTipoEstado().toString().equals("NUEVO") ? "bg-success-subtle text-success" : "bg-warning-subtle text-warning"%>">
+                <i class="fa-solid fa-circle fa-2xs me-1"></i> <%=r.getTipoEstado()%>
+            </span>
+        </td>
+        <td>
+            <span class="fw-semibold small text-uppercase text-secondary">
+                <i class="fa-solid fa-car-side me-1"></i> <%=r.getTipoRodado()%>
+            </span>
+        </td>
+        <td class="text-end">
+            <!-- BOTÓN EDITAR -->
+            <a href="actualizarRodado?patente=<%=r.getPatente()%>" 
+               class="action-icon icon-edit me-2" 
+               title="Editar">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            
+            <!-- BOTÓN ELIMINAR -->
+            <a href="javascript:void(0)" 
+               onclick="eliminarRodado('<%=r.getPatente()%>')" 
+               class="action-icon icon-delete" 
+               title="Eliminar">
+                <i class="fa-solid fa-trash"></i>
+            </a>
+        </td>
+    </tr>
+    <%
+        }
+    } else {
+    %>
+    <tr>
+        <td colspan="6">
+            <div class="empty-state text-center py-5">
+                <i class="fa-solid fa-car-rear fa-4x text-light mb-3"></i>
+                <h5 class="text-muted">No hay rodados registrados</h5>
+                <p class="small text-muted">Comienza agregando un nuevo vehículo al inventario.</p>
+            </div>
+        </td>
+    </tr>
+    <%
+    }
+    %>
+</tbody>
+
 				</table>
 			</div>
 		</div>
 	</div>
 
-	<!-- Bootstrap JS -->
-	<script src="https://cdn.jsdelivr.net"></script>
+
+    <!-- 3. POR ÚLTIMO tu archivo que USA a las librerías de arriba -->
+    <script src="<%= request.getContextPath() %>/assets/js/rodado.js"></script>
 </body>
 </html>

@@ -1,25 +1,66 @@
 // webapp/js/rodado.js
 
-/**
- * 1. ELIMINAR RODADO
- * Se llama desde el onclick del botón en la tabla.
- */
+// En webapp/assets/js/rodado.js
 function eliminarRodado(patente) {
-    if (!confirm(`¿Estás seguro de eliminar el rodado con patente: ${patente}?`)) return;
+    // Si la librería no cargó, usamos el confirm nativo del navegador
+    if (typeof Swal === 'undefined') {
+        if (confirm(`¿Estás seguro de eliminar el rodado con patente: ${patente}?`)) {
+            ejecutarFetchEliminar(patente);
+        }
+        return;
+    }
 
-    fetch(`eliminarRodado?patente=${patente}`, { method: 'GET' })
+    // Código con SweetAlert
+    Swal.fire({
+        title: '¿Eliminar vehículo?',
+        text: `La patente ${patente} se borrará permanentemente`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff5b5c',
+        cancelButtonColor: '#a3aed0',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            ejecutarFetchEliminar(patente);
+        }
+    });
+}
+
+/**
+ * FUNCIÓN AUXILIAR DE ELIMINACIÓN
+ */
+function ejecutarFetchEliminar(patente) {
+    // Mostramos un pequeño indicador de carga
+    if (typeof Swal !== 'undefined') {
+        Swal.showLoading();
+    }
+
+    fetch(`eliminarRodado?patente=${patente}`)
         .then(response => {
+            // No importa si el servlet hace redirect o devuelve OK, 
+            // si la respuesta es exitosa (200-299), procedemos.
             if (response.ok) {
-                // Opción A: Recargar la página para ver cambios
-                location.reload(); 
-                // Opción B: Si querés borrar la fila sin recargar, 
-                // deberías tener un id en el <tr> como id="fila-PATENTE"
-                // document.getElementById(`fila-${patente}`).remove();
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('¡Borrado!', 'El vehículo fue eliminado.', 'success')
+                        .then(() => {
+                            // FORZAMOS la recarga de la página para limpiar el listado
+                            window.location.href = "listarRodado";
+                        });
+                } else {
+                    alert("¡Vehículo eliminado!");
+                    window.location.href = "listarRodado";
+                }
             } else {
-                alert("Error al intentar eliminar el vehículo.");
+                throw new Error("Error en la respuesta del servidor");
             }
         })
-        .catch(error => console.error("Error en eliminar:", error));
+        .catch(error => {
+            console.error("Error:", error);
+            // Si algo falla, avisamos y refrescamos igual para sincronizar estado
+            alert("El proceso terminó. Refrescando lista...");
+            window.location.href = "listarRodado";
+        });
 }
 
 /**
@@ -64,29 +105,32 @@ function crearRodado(event) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     .then(response => {
-        if (response.ok) {
-            alert("¡Vehículo registrado con éxito!");
-            window.location.href = "listarRodado";
-        } else {
-            alert("Error al registrar el vehículo.");
-        }
+		if (response.ok) {
+		    alert("¡Éxito! El rodado se guardó."); // Opcional: un cartelito antes de irse
+		   window.location.href = "/listarRodado" // <--- ESTO hace la redirección
+		} else {
+		    alert("Error en el servidor");
+		}
     })
     .catch(error => console.error("Error en crear:", error));
 }
 
-/**
- * 4. LISTAR RODADOS (Refrescar tabla)
- * Esta función es útil si querés actualizar solo el cuerpo de la tabla
- * sin tocar el resto de la página.
- */
 function refrescarTabla() {
-    fetch("listarRodado")
-        .then(response => response.text())
+    // Pedimos de nuevo el listado al Servlet
+    fetch("listarRodado") 
+        .then(response => response.text()) // Recibimos el HTML de la página entera
         .then(html => {
-            // Suponiendo que tu tabla tiene un id="tablaRodados"
-            // Esta lógica requiere que el servlet devuelva solo el fragmento de la tabla
-            // o procesar el HTML completo. Por ahora, un reload es más simple.
-            location.reload();
-        })
-        .catch(error => console.error("Error al refrescar:", error));
+            // Creamos un elemento temporal para "parsear" ese HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Extraemos SOLO el contenido de la nueva tabla
+            const nuevaTabla = doc.getElementById('contenedorTabla').innerHTML;
+            
+            // Reemplazamos el contenido viejo con el nuevo en la página actual
+            document.getElementById('contenedorTabla').innerHTML = nuevaTabla;
+            
+            console.log("Tabla actualizada con AJAX");
+        });
 }
+

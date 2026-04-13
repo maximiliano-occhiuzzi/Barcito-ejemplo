@@ -2,7 +2,6 @@ package com.sample.core.controller.Rodado;
 
 import java.io.IOException;
 import java.util.List;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,37 +11,30 @@ import javax.servlet.http.HttpServletResponse;
 import com.sample.core.service.RodadoService;
 import com.sample.core.service.RodadoServiceImp;
 import com.sample.core.domain.Rodado;
-import com.sample.core.enums.CajaEnum;
-import com.sample.core.enums.MotorEnum;
-import com.sample.core.enums.PuertasEnum;
-import com.sample.core.enums.TipoConsumoEnum;
-import com.sample.core.enums.TipoEstadoEnum;
-import com.sample.core.enums.TipoRodadoEnum;
-import com.sample.core.controller.Rodado.listarRodado;
 
 @WebServlet(urlPatterns = "/listarRodado")
 public class listarRodado extends HttpServlet {
 
-	// 1. DECLARARLA ACÁ (Fuera de los métodos)
-	// Así es accesible tanto por doGet como por doPost
-	private RodadoService rodadoService = new RodadoServiceImp();
+    private RodadoService rodadoService = new RodadoServiceImp();
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try {
-			// Ya no hace falta declararla acá adentro
-			List<Rodado> lista = rodadoService.listarTodos();
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            // 1. Obtener la lista
+            List<Rodado> lista = rodadoService.listarTodos();
 
-			req.setAttribute("listaRodados", lista);
-			RequestDispatcher dispatcher = req.getRequestDispatcher(req.getContextPath() + "/Rodado/listarRodado.jsp");
-			dispatcher.forward(req, resp);
+            // 2. Guardar en el request
+            req.setAttribute("listaRodados", lista);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			resp.sendRedirect("listarRodado.jsp?status=error_listado");
-		}
-	}
+            // 3. CAMBIO IMPORTANTE: El dispatcher NO lleva el ContextPath
+            // Si tu JSP est� en webapp/Rodado/listarRodado.jsp, la ruta es esta:
+            RequestDispatcher dispatcher = req.getRequestDispatcher("Rodado/listarRodado.jsp");
+            dispatcher.forward(req, resp);
 
-	
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            // En caso de error de servidor, enviamos el c�digo correspondiente
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al cargar la lista");
+        }
+    }
 }

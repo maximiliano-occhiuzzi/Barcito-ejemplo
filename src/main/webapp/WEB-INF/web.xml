@@ -1,11 +1,11 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://jcp.org"
+  xmlns:xsi="http://w3.org"
+  xsi:schemaLocation="http://jcp.org 
+                      http://jcp.org/web-app_3_1.xsd"
+  version="3.1">
 
-<web-app>
   <display-name>Barcito fatima</display-name>
-
-  <!-- ELIMINAMOS TODOS LOS <servlet> Y <servlet-mapping> DE RODADO -->
 
   <welcome-file-list>
     <welcome-file>usuario/login.jsp</welcome-file>
