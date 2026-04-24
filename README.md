@@ -1,6 +1,3 @@
-# Barcito
+# RODADO
 projecto monolito ejemplo 
-# Barcito-ejemplo
-# barcito-ejemplo
-# barcito-ejemplo
-# Barcito-ejemplo
+CRUD + AJAX 
